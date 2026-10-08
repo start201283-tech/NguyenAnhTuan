@@ -1468,7 +1468,7 @@ function buildDefaultWeeks(count, startYear){
     start = new Date(startYear, 8, 1);            // Thứ Hai đầu tiên của tháng 9
     while(start.getDay()!==1) start.setDate(start.getDate()+1);
   } else {
-    start = new Date(2026, 8, 7); // Thứ Hai 07/09/2026 — tuần 1
+    start = new Date(2025, 8, 1); // Thứ Hai 01/09/2025 — tuần 1 (năm học 2025-2026)
   }
   function fmt(d){ return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0"); }
   for(var i=1;i<=count;i++){
@@ -1481,10 +1481,10 @@ function buildDefaultWeeks(count, startYear){
   return weeks;
 }
 var SEED_ACCOUNTS = [
-  { id:"TK001", username:"saodo.6.1", password:"sd61@2026", assignedClass:"6/1", loai:"saodo", createdAt:"01/09/2026" },
-  { id:"TK002", username:"gvcn.7.3", password:"gv73@2026", assignedClass:"7/3", loai:"gvcn", createdAt:"01/09/2026" },
-  { id:"TK003", username:"saodo.8.5", password:"sd85@2026", assignedClass:"8/5", loai:"saodo", createdAt:"02/09/2026" },
-  { id:"TK004", username:"gvcn.9.2", password:"gv92@2026", assignedClass:"9/2", loai:"gvcn", createdAt:"02/09/2026" }
+  { id:"TK001", username:"saodo.6.1", password:"sd61@2026", assignedClass:"6/1", loai:"saodo", createdAt:"01/09/2025" },
+  { id:"TK002", username:"gvcn.7.3", password:"gv73@2026", assignedClass:"7/3", loai:"gvcn", createdAt:"01/09/2025" },
+  { id:"TK003", username:"saodo.8.5", password:"sd85@2026", assignedClass:"8/5", loai:"saodo", createdAt:"02/09/2025" },
+  { id:"TK004", username:"gvcn.9.2", password:"gv92@2026", assignedClass:"9/2", loai:"gvcn", createdAt:"02/09/2025" }
 ];
 var ADMIN_ACCOUNT = { username:"admin", password:"admin@2026" };
 var CHECKLIST_SEED = [
@@ -1627,7 +1627,7 @@ function badgeStylePillar(p){
 }
 
 /* ---------------------------- LocalStorage ---------------------------- */
-var LS_KEY = "lienDoiXuanTan_vanilla_v1";
+var LS_KEY = "lienDoiXuanTan_vanilla_v2_2025-2026";
 function loadSaved(){
   try{ var raw = localStorage.getItem(LS_KEY); return raw? JSON.parse(raw): null; }catch(e){ return null; }
 }
@@ -1858,13 +1858,11 @@ if(!state.gvcnUpdated_2026_09){
   });
   state.gvcnUpdated_2026_09 = true;
 }
-if((!state.students || !state.students.length) && !state.studentsCleared) state.students = REAL_STUDENTS_XUANTAN.slice();
+if(!state.students) state.students = REAL_STUDENTS_XUANTAN.slice();   // V11: lần đầu mở nạp sẵn 1.120 Đội viên / 28 Chi đội; xóa sạch rồi thì không tự nạp lại
 if(!state.adminAccount) state.adminAccount = Object.assign({}, ADMIN_ACCOUNT);
 if(!state.accounts || !state.accounts.length) state.accounts = SEED_ACCOUNTS.slice();
 if(!state.schoolYear){
-  var __now = new Date(), __y = __now.getFullYear(), __m = __now.getMonth()+1;
-  var __startY = __m>=8? __y : __y-1;
-  state.schoolYear = __startY+'-'+(__startY+1);
+  state.schoolYear = '2025-2026';   // V10: ứng dụng làm mới, bắt đầu từ năm học 2025-2026
 }
 if(!state.yearArchives) state.yearArchives = {};
 if(!state.quizQuestions || !state.quizQuestions.length) state.quizQuestions = NGHI_THUC_QUIZ.map(function(q,i){ return Object.assign({id:'q'+(i+1)}, q); });
@@ -1884,14 +1882,14 @@ if(!state.savedWeeks) state.savedWeeks = [];
 if(!state.weekMeta) state.weekMeta = {};
 if(!state.latestYear) state.latestYear = state.schoolYear;
 if(!state.weeks || !state.weeks.length) state.weeks = buildDefaultWeeks();
-if(!state.currentWeek) state.currentWeek = state.weeks[2];
+if(!state.currentWeek) state.currentWeek = state.weeks[0];
 if(!state.pillarMaxScores) state.pillarMaxScores = Object.assign({}, DEFAULT_MAX_SCORES);
 if(!state.customInfractions) state.customInfractions = [];
 if(!state.checklist) state.checklist = CHECKLIST_SEED.map(function(c){ return Object.assign({},c); });
 if(!state.rldv) state.rldv = {}; // { [classCode]: { chuyenHieu:[...], recognized, recognizedDate, note } }
 if(!state.documents) state.documents = [
   { id:"TL0001", title:"Điều lệ Đội TNTP Hồ Chí Minh", category:"Văn bản chỉ đạo", url:"", note:"Bản điều lệ hiện hành — liên hệ Tổng phụ trách để nhận bản in.", addedBy:"Admin", addedAt:new Date().toLocaleDateString('vi-VN') },
-  { id:"TL0002", title:"Kế hoạch công tác Đội năm học 2026-2027", category:"Kế hoạch - Chương trình", url:"", note:"Kế hoạch tổng thể các hoạt động của Liên đội trong năm học.", addedBy:"Admin", addedAt:new Date().toLocaleDateString('vi-VN') },
+  { id:"TL0002", title:"Kế hoạch công tác Đội năm học 2025-2026", category:"Kế hoạch - Chương trình", url:"", note:"Kế hoạch tổng thể các hoạt động của Liên đội trong năm học.", addedBy:"Admin", addedAt:new Date().toLocaleDateString('vi-VN') },
   { id:"TL0003", title:"Mẫu biên bản sinh hoạt Chi đội", category:"Biểu mẫu", url:"", note:"Dùng cho các buổi sinh hoạt Chi đội hàng tuần.", addedBy:"Admin", addedAt:new Date().toLocaleDateString('vi-VN') }
 ];
 
@@ -2016,7 +2014,7 @@ function TopHeaderHTML(){
       + '<div class="logo-badge">'+icon('star',14,'icon-fill')+'</div>'
       + '<div style="min-width:0;">'
         + '<h1>HỆ THỐNG QUẢN LÝ LIÊN ĐỘI THCS XUÂN TÂN</h1>'
-        + '<p>'+state.classes.length+' Chi đội · '+state.students.length.toLocaleString('vi-VN')+' Đội viên (Copyright Mr Tuấn)</p>'
+        + '<p>'+state.classes.length+' Chi đội · '+state.students.length.toLocaleString('vi-VN')+' Đội viên</p>'
       + '</div>'
     + '</div>'
     + '<div class="header-right">'
@@ -2281,7 +2279,7 @@ function DashboardHTML(){
 
   return '<div class="stack">'
     + '<div class="row-between">'
-      + '<div><h2 class="page-title">Tổng quan Liên đội</h2><p class="page-sub">Số liệu tổng hợp và trạng thái liên kết dữ liệu đám mây, cập nhật theo thời gian thực - Copyright Mr Tuấn.</p></div>'
+      + '<div><h2 class="page-title">Tổng quan Liên đội</h2><p class="page-sub">Số liệu tổng hợp và trạng thái liên kết dữ liệu đám mây, cập nhật theo thời gian thực</p></div>'
       + '<div class="card" style="padding:9px 13px;display:flex;align-items:center;gap:9px;">'
         + icon('calendar',17,'','color:#2563eb;')
         + '<div><p style="font-size:10.5px;color:var(--slate-400);margin:0;">Năm học</p><p style="font-size:14px;font-weight:800;margin:0;">'+esc(state.schoolYear)+'</p></div>'
@@ -3501,6 +3499,7 @@ function AccountsHTML(){
         + (a.error? '<p style="font-size:12px;color:#dc2626;">'+icon('alertTriangle',12)+' '+esc(a.error)+'</p>' : '')
         + '<button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitNewAccount()">Tạo tài khoản</button>'
       + '</div>'
+      + BulkAccountsCardHTML()
       + '<div class="card" style="grid-column:1/-1;">'
         + '<strong>Danh sách tài khoản đang hoạt động ('+state.accounts.length+')</strong>'
         + '<div class="tbl-wrap" style="margin-top:10px;"><table><thead><tr><th>Tài khoản</th><th>Loại</th><th>Chi đội</th><th>Mật khẩu</th><th class="hide-sm">Ngày tạo</th><th style="text-align:right;">Thao tác</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
@@ -3508,6 +3507,7 @@ function AccountsHTML(){
     + '</div>'
   + '</div>'
   + (a.confirmDelete? ConfirmDeleteAccountModalHTML() : '')
+  + (a.bulkResult? BulkResultModalHTML() : '')
   + (a.resetOpen? ResetAccountPwModalHTML() : '');
 }
 
@@ -3629,7 +3629,7 @@ function removePlanFile(){ ui.plans.form.fileData=''; ui.plans.form.fileName='';
 function cancelEditPlan(){ ui.plans.editingId=null; ui.plans.form={loai:'Tuần',thoiGian:'',noiDung:'',phuTrach:'',trangThai:'Dự kiến',fileData:'',fileName:'',fileSizeKB:0}; render(); }
 function submitPlan(){
   var f = ui.plans.form;
-  if(!f.thoiGian.trim()){ ui.plans.error='Vui lòng nhập thời gian (vd: Tuần 5, hoặc Tháng 10/2026).'; render(); return; }
+  if(!f.thoiGian.trim()){ ui.plans.error='Vui lòng nhập thời gian (vd: Tuần 5, hoặc Tháng 10/2025).'; render(); return; }
   if(!f.noiDung.trim()){ ui.plans.error='Vui lòng nhập nội dung hoạt động.'; render(); return; }
   ui.plans.error = '';
   if(ui.plans.editingId){
@@ -3717,7 +3717,7 @@ function ActivityPlansHTML(){
         + '<strong style="display:flex;align-items:center;gap:7px;">'+icon(p.editingId?'pencil':'plus',16)+' '+(p.editingId?'Sửa kế hoạch':'Thêm kế hoạch mới')+'</strong>'
         + '<div class="field-grid-2">'
           + '<div><label class="label">Loại</label><select class="select" onchange="ui.plans.form.loai=this.value; render();"><option value="Tuần" '+(p.form.loai==='Tuần'?'selected':'')+'>Theo Tuần</option><option value="Tháng" '+(p.form.loai==='Tháng'?'selected':'')+'>Theo Tháng</option></select></div>'
-          + '<div><label class="label">Thời gian</label><input class="input" placeholder="'+(p.form.loai==='Tuần'?'vd: Tuần 5 (29/9 - 5/10)':'vd: Tháng 10/2026')+'" value="'+esc(p.form.thoiGian)+'" oninput="ui.plans.form.thoiGian=this.value;"></div>'
+          + '<div><label class="label">Thời gian</label><input class="input" placeholder="'+(p.form.loai==='Tuần'?'vd: Tuần 5 (29/9 - 5/10)':'vd: Tháng 10/2025')+'" value="'+esc(p.form.thoiGian)+'" oninput="ui.plans.form.thoiGian=this.value;"></div>'
         + '</div>'
         + '<div><label class="label">Nội dung hoạt động</label><textarea class="input" rows="3" placeholder="vd: Sinh hoạt dưới cờ, phát động phong trào Kế hoạch nhỏ, kiểm tra vệ sinh lớp học..." oninput="ui.plans.form.noiDung=this.value;">'+esc(p.form.noiDung)+'</textarea></div>'
         + '<div class="field-grid-2">'
@@ -3862,8 +3862,8 @@ function PhotosHTML(){
             ? ('<div style="position:relative;max-width:260px;"><img src="'+ph.form.data+'" style="width:100%;border-radius:8px;display:block;"><button class="icon-btn danger" style="position:absolute;top:5px;right:5px;background:#fff;" onclick="removePhotoFormImage()">'+icon('x',13)+'</button></div>')
             : ('<input class="input" type="file" accept="image/*" onchange="handlePhotoFileSelect(this.files)" '+(ph.busy?'disabled':'')+'>'+(ph.busy?'<p style="font-size:11px;color:var(--slate-400);">Đang xử lý ảnh…</p>':'')))
         + '<div class="field-grid-2">'
-          + '<div><label class="label">Chú thích (tùy chọn)</label><input class="input" placeholder="vd: Lễ phát động Trung thu 2026" value="'+esc(ph.form.caption)+'" oninput="ui.photos.form.caption=this.value;"></div>'
-          + '<div><label class="label">Ngày diễn ra (tùy chọn)</label><input class="input" placeholder="vd: 15/10/2026" value="'+esc(ph.form.ngay)+'" oninput="ui.photos.form.ngay=this.value;"></div>'
+          + '<div><label class="label">Chú thích (tùy chọn)</label><input class="input" placeholder="vd: Lễ phát động Trung thu 2025" value="'+esc(ph.form.caption)+'" oninput="ui.photos.form.caption=this.value;"></div>'
+          + '<div><label class="label">Ngày diễn ra (tùy chọn)</label><input class="input" placeholder="vd: 15/10/2025" value="'+esc(ph.form.ngay)+'" oninput="ui.photos.form.ngay=this.value;"></div>'
         + '</div>'
         + (ph.error? '<p style="font-size:12px;color:#dc2626;">'+icon('alertTriangle',12)+' '+esc(ph.error)+'</p>' : '')
         + '<button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitPhoto()">'+icon('upload',15)+' Đăng ảnh</button>'
@@ -4983,6 +4983,148 @@ function submitResetAll(){
   persist();
   pushStateToCloud(true);
   notify('Đã xóa dữ liệu tất cả các năm học. Ứng dụng đã được làm mới.'+(f.clearStudents? ' Vào mục Đội viên để nhập danh sách mới bằng file Excel.' : ''));
+}
+
+/* =======================================================================
+   BỔ SUNG PHIÊN BẢN V12
+   - Tạo hàng loạt tài khoản con: 1 nút cho Sao Đỏ, 1 nút cho GVCN (mỗi Chi đội 1 tài khoản)
+   - Tải danh sách tài khoản (.csv) / in danh sách để phát cho giáo viên
+   ======================================================================= */
+function genAccPassword(){
+  var chars = 'abcdefghjkmnpqrstuvwxyz23456789';   // bỏ ký tự dễ nhầm: i l o 0 1
+  for(var tries=0; tries<50; tries++){
+    var out = '';
+    var buf = new Uint32Array(8);
+    if(window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(buf);
+    else for(var k=0;k<8;k++) buf[k] = Math.floor(Math.random()*4294967296);
+    for(var i=0;i<8;i++) out += chars.charAt(buf[i] % chars.length);
+    if(/[a-z]/.test(out) && /[2-9]/.test(out)) return out;
+  }
+  return 'mk' + Math.floor(100000 + Math.random()*899999);
+}
+function nextAccountSeq(){
+  var max = 0;
+  state.accounts.forEach(function(a){
+    var m = /^TK(\d+)$/.exec(a.id||''); if(m) max = Math.max(max, parseInt(m[1],10));
+  });
+  return max;
+}
+function loaiLabelOf(loai){ return loai==='saodo'? 'Sao Đỏ' : 'GVCN'; }
+function bulkCreateAccounts(loai){
+  if(!requireAdmin('Tạo hàng loạt tài khoản')) return;
+  var label = loaiLabelOf(loai);
+  var codes = classCodes();
+  var missing = codes.filter(function(c){
+    return !state.accounts.some(function(a){ return a.loai===loai && a.assignedClass===c; });
+  });
+  if(!missing.length){
+    alert('Cả '+codes.length+' Chi đội đã có tài khoản '+label+'. Không cần tạo thêm.\n\nBạn có thể bấm “Tải danh sách” để lấy lại danh sách tài khoản.');
+    return;
+  }
+  var existed = codes.length - missing.length;
+  if(!confirm('Tạo '+missing.length+' tài khoản '+label+' cho các Chi đội chưa có'+(existed? ' ('+existed+' Chi đội đã có sẵn, được giữ nguyên)' : '')+'?\n\nTên đăng nhập có dạng '+(loai==='saodo'?'saodo':'gvcn')+'.6.1 và mỗi tài khoản được cấp một mật khẩu ngẫu nhiên.')) return;
+  var prefix = (loai==='saodo'? 'saodo' : 'gvcn');
+  var seq = nextAccountSeq();
+  var today = new Date().toLocaleDateString('vi-VN');
+  var created = [];
+  missing.forEach(function(c){
+    var base = prefix+'.'+c.replace('/','.');
+    var uname = base, n = 1;
+    while(state.accounts.some(function(a){ return a.username===uname; }) || created.some(function(a){ return a.username===uname; })){
+      n++; uname = base+'.'+n;
+    }
+    seq++;
+    created.push({ id:'TK'+String(seq).padStart(3,'0'), username:uname, password:genAccPassword(), assignedClass:c, loai:loai, createdAt:today });
+  });
+  state.accounts = state.accounts.concat(created);
+  persist();
+  ui.accounts.bulkResult = { loai:loai, label:label, created:created, existed:existed };
+  notify('Đã tạo '+created.length+' tài khoản '+label+'.');
+}
+function accountsOfLoai(loai){
+  var order = classCodes();
+  return state.accounts.filter(function(a){ return a.loai===loai; }).sort(function(a,b){
+    return order.indexOf(a.assignedClass) - order.indexOf(b.assignedClass);
+  });
+}
+function gvcnNameOfClass(code){
+  var c = state.classes.filter(function(x){ return x.code===code; })[0];
+  return c? (c.gvcn||'') : '';
+}
+function exportAccountsCsv(loai){
+  if(!requireAdmin('Tải danh sách tài khoản')) return;
+  var list = accountsOfLoai(loai);
+  if(!list.length){ alert('Chưa có tài khoản '+loaiLabelOf(loai)+' nào để tải.'); return; }
+  function q(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; }
+  var rows = [['STT','Chi đội','GVCN','Loại tài khoản','Tên đăng nhập','Mật khẩu']];
+  list.forEach(function(a,i){ rows.push([i+1, a.assignedClass, gvcnNameOfClass(a.assignedClass), loaiLabelOf(a.loai), a.username, a.password]); });
+  var csv = '\uFEFF' + rows.map(function(r){ return r.map(q).join(','); }).join('\r\n');
+  downloadBlob('DanhSach_TaiKhoan_'+(loai==='saodo'?'SaoDo':'GVCN')+'_XuanTan.csv', new Blob([csv], { type:'text/csv;charset=utf-8' }));
+  notify('Đã tải danh sách '+list.length+' tài khoản '+loaiLabelOf(loai)+'. Hãy cất file ở nơi riêng tư vì có chứa mật khẩu.');
+}
+function printAccountsList(loai){
+  if(!requireAdmin('In danh sách tài khoản')) return;
+  var list = accountsOfLoai(loai);
+  var body = '<h1>Danh sách tài khoản '+loaiLabelOf(loai)+' — THCS Xuân Tân</h1><h2>Năm học '+esc(state.schoolYear)+' · '+list.length+' tài khoản</h2>'
+    + '<table><thead><tr><th>STT</th><th>Chi đội</th><th>GVCN</th><th>Tên đăng nhập</th><th>Mật khẩu</th></tr></thead><tbody>'
+    + list.map(function(a,i){ return '<tr><td>'+(i+1)+'</td><td>'+esc(a.assignedClass)+'</td><td>'+esc(gvcnNameOfClass(a.assignedClass))+'</td><td>'+esc(a.username)+'</td><td style="font-family:Consolas,monospace;">'+esc(a.password)+'</td></tr>'; }).join('')
+    + '</tbody></table>';
+  openPrintWindow('Danh sách tài khoản '+loaiLabelOf(loai), body);
+}
+function closeBulkResult(){ ui.accounts.bulkResult = null; render(); }
+function BulkAccountsCardHTML(){
+  var n = classCodes().length;
+  function have(loai){ return accountsOfLoai(loai).length; }
+  function line(loai){
+    return '<div style="border:1px solid var(--slate-200);border-radius:12px;padding:11px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;"><strong style="font-size:13px;">Tài khoản '+loaiLabelOf(loai)+'</strong><span class="badge" style="'+badgeStyle(have(loai)>=n?'emerald':'amber')+'">'+have(loai)+'/'+n+' Chi đội</span></div>'
+      + '<button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="bulkCreateAccounts(\''+loai+'\')">'+icon('userPlus',15)+' Tạo '+n+' tài khoản '+loaiLabelOf(loai)+'</button>'
+      + '<div class="row" style="margin-top:8px;gap:8px;">'
+        + '<button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="exportAccountsCsv(\''+loai+'\')">'+icon('download',14)+' Tải danh sách</button>'
+        + '<button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="printAccountsList(\''+loai+'\')">'+icon('printer',14)+' In</button>'
+      + '</div>'
+      + (loai==='saodo'? '<button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px;color:#dc2626;border-color:#fecaca;" onclick="deleteAllSaoDoAccounts()">'+icon('trash',14)+' Xóa hết tài khoản Sao Đỏ để tạo mới</button>' : '')
+    + '</div>';
+  }
+  return '<div class="card stack">'
+    + '<strong style="display:flex;align-items:center;gap:7px;">'+icon('userCog',16)+' Tạo tài khoản hàng loạt</strong>'
+    + '<p style="font-size:11.5px;color:var(--slate-500);">Mỗi nút tạo một lần tài khoản cho tất cả Chi đội chưa có (mỗi Chi đội 1 tài khoản). Tên đăng nhập theo mẫu <strong>saodo.6.1</strong> / <strong>gvcn.6.1</strong>, mật khẩu ngẫu nhiên 8 ký tự. Chi đội đã có tài khoản được giữ nguyên.</p>'
+    + line('saodo')
+    + line('gvcn')
+  + '</div>';
+}
+function BulkResultModalHTML(){
+  var r = ui.accounts.bulkResult;
+  var rows = r.created.map(function(a){
+    return '<tr><td><span class="badge" style="'+badgeStyle('blue')+'">'+esc(a.assignedClass)+'</span></td><td style="font-weight:600;">'+esc(a.username)+'</td><td style="font-family:Consolas,monospace;font-size:12px;">'+esc(a.password)+'</td></tr>';
+  }).join('');
+  return '<div class="modal-overlay" onclick="if(event.target===this) closeBulkResult();">'
+    + '<div class="modal">'
+      + '<div class="modal-head"><strong>'+icon('checkCircle2',17)+' Đã tạo '+r.created.length+' tài khoản '+esc(r.label)+'</strong><button class="icon-btn" onclick="closeBulkResult()">'+icon('x',18)+'</button></div>'
+      + '<div class="modal-body stack">'
+        + '<p style="font-size:12.5px;color:var(--slate-600);">'+(r.existed? r.existed+' Chi đội đã có tài khoản từ trước (giữ nguyên). ' : '')+'Hãy <strong>tải hoặc in danh sách ngay</strong> để phát cho giáo viên. Mật khẩu vẫn xem lại được trong bảng “Danh sách tài khoản”, và có thể đổi bằng biểu tượng chìa khóa.</p>'
+        + '<div class="tbl-wrap" style="max-height:300px;overflow:auto;"><table><thead><tr><th>Chi đội</th><th>Tên đăng nhập</th><th>Mật khẩu</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+        + '<div class="row" style="gap:8px;flex-wrap:wrap;">'
+          + '<button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="exportAccountsCsv(\''+r.loai+'\')">'+icon('download',15)+' Tải danh sách (.csv)</button>'
+          + '<button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="printAccountsList(\''+r.loai+'\')">'+icon('printer',15)+' In danh sách</button>'
+        + '</div>'
+      + '</div>'
+    + '</div>'
+  + '</div>';
+}
+
+/* V13 — Xóa hết tài khoản Sao Đỏ để tạo mới (dùng khi chuyển sang tuần thi đua khác) */
+function deleteAllSaoDoAccounts(){
+  if(!requireAdmin('Xóa tài khoản Sao Đỏ')) return;
+  var list = accountsOfLoai('saodo');
+  if(!list.length){ alert('Hiện chưa có tài khoản Sao Đỏ nào để xóa.'); return; }
+  if(!confirm('XÓA HẾT '+list.length+' tài khoản Sao Đỏ?\n\n• Chỉ xóa tài khoản đăng nhập của Sao Đỏ; điểm thi đua đã chấm, danh sách Đội viên và tài khoản GVCN được giữ nguyên.\n• Mật khẩu cũ sẽ không còn dùng được.\n• Sau đó bấm “Tạo '+classCodes().length+' tài khoản Sao Đỏ” để cấp tài khoản mới cho tuần khác.\n\nNếu cần lưu danh sách tài khoản hiện tại, hãy bấm Hủy và “Tải danh sách” trước.\n\nTiếp tục xóa?')) return;
+  state.accounts = state.accounts.filter(function(a){ return a.loai!=='saodo'; });
+  list.forEach(function(a){ delete ui.accounts.visiblePw[a.id]; });
+  ui.accounts.bulkResult = null;
+  persist();
+  notify('Đã xóa '+list.length+' tài khoản Sao Đỏ. Bấm “Tạo '+classCodes().length+' tài khoản Sao Đỏ” để tạo mới.');
+  render();
 }
 
 </script>
